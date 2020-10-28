@@ -9,7 +9,6 @@ package org.seedstack.redis;
 
 import org.seedstack.coffig.Config;
 import org.seedstack.coffig.SingleValue;
-import org.seedstack.seed.validation.NotBlank;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
 
@@ -44,7 +43,7 @@ public class RedisConfig {
     }
 
     public static class ClientConfig {
-        @NotBlank
+        @NotNull
         @SingleValue
         private URI uri;
         @NotNull
