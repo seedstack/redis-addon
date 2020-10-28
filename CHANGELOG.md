@@ -1,3 +1,7 @@
+# Version 2.0.3 (2020-10-30)
+
+* [fix] Replace the `@NotBlank` by a `@NotNull` on the `uri` config option.
+
 # Version 2.0.2 (2020-08-31)
 
 * [brk] Renamed `url` config option to `uri`. The user, password, port and db can be specified directly in this URI (`redis://[[username:]password@]host[:port][/database]`).
