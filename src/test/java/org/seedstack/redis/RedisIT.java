@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013-2020, The SeedStack authors <http://seedstack.org>
+ * Copyright © 2013-2021, The SeedStack authors <http://seedstack.org>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,11 +12,7 @@ import org.junit.runner.RunWith;
 import org.seedstack.seed.SeedException;
 import org.seedstack.seed.testing.junit4.SeedITRunner;
 import org.seedstack.seed.transaction.Transactional;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Response;
-import redis.clients.jedis.Transaction;
+import redis.clients.jedis.*;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,11 +28,15 @@ public class RedisIT {
     @Inject
     @Named("client1")
     private JedisPool jedisPool;
+    @Inject
+    @Named("cluster1")
+    private JedisCluster jedisCluster;
 
     @Test
     public void redis_is_injectable() {
         assertThat(transaction).isNotNull();
         assertThat(jedisPool).isNotNull();
+        assertThat(jedisCluster).isNotNull();
     }
 
     @Test(expected = SeedException.class)

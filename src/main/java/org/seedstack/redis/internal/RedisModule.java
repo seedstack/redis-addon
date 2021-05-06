@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013-2020, The SeedStack authors <http://seedstack.org>
+ * Copyright © 2013-2021, The SeedStack authors <http://seedstack.org>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,6 +12,7 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 import org.seedstack.redis.RedisExceptionHandler;
 import org.seedstack.seed.core.internal.transaction.TransactionalClassProxy;
+import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Transaction;
@@ -20,30 +21,36 @@ import java.util.Map;
 
 class RedisModule extends PrivateModule {
     private final Map<String, Class<? extends RedisExceptionHandler>> exceptionHandlerClasses;
+    private final Map<String, JedisCluster> jedisClusters;
     private final Map<String, JedisPool> jediPools;
 
-    public RedisModule(Map<String, JedisPool> jedisPools, Map<String, Class<? extends RedisExceptionHandler>> exceptionHandlerClasses) {
+    public RedisModule(Map<String, JedisPool> jedisPools, Map<String, Class<? extends RedisExceptionHandler>> exceptionHandlerClasses, Map<String, JedisCluster> jedisClusters) {
         this.jediPools = jedisPools;
         this.exceptionHandlerClasses = exceptionHandlerClasses;
+        this.jedisClusters = jedisClusters;
     }
 
     @Override
     protected void configure() {
-        RedisLink<Transaction> transactionRedisLink = new RedisLink<Transaction>();
+        RedisLink<Transaction> transactionRedisLink = new RedisLink<>();
         bind(Transaction.class).toInstance(TransactionalClassProxy.create(Transaction.class, transactionRedisLink));
 
-        RedisLink<Pipeline> pipelineRedisLink = new RedisLink<Pipeline>();
+        RedisLink<Pipeline> pipelineRedisLink = new RedisLink<>();
         bind(Pipeline.class).toInstance(TransactionalClassProxy.create(Pipeline.class, pipelineRedisLink));
 
-        for (Map.Entry<String, JedisPool> jedisPoolEntry : jediPools.entrySet()) {
-            bindClient(jedisPoolEntry.getKey(), jedisPoolEntry.getValue(), transactionRedisLink, pipelineRedisLink);
-
-            bind(JedisPool.class).annotatedWith(Names.named(jedisPoolEntry.getKey())).toInstance(jedisPoolEntry.getValue());
-            expose(JedisPool.class).annotatedWith(Names.named(jedisPoolEntry.getKey()));
-        }
+        jediPools.forEach((key, value) -> {
+            bindClient(key, value, transactionRedisLink, pipelineRedisLink);
+            bind(JedisPool.class).annotatedWith(Names.named(key)).toInstance(value);
+            expose(JedisPool.class).annotatedWith(Names.named(key));
+        });
 
         expose(Transaction.class);
         expose(Pipeline.class);
+
+        jedisClusters.forEach((key, value) -> {
+            bind(JedisCluster.class).annotatedWith(Names.named(key)).toInstance(value);
+            expose(JedisCluster.class).annotatedWith(Names.named(key));
+        });
     }
 
     private void bindClient(String name, JedisPool jedisPool, RedisLink<Transaction> transactionRedisLink, RedisLink<Pipeline> pipelineRedisLink) {

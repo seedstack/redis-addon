@@ -1,3 +1,7 @@
+# Version 2.1.0 (2021-05-06)
+
+* [new] Support cluster mode for Redis through `JedisCluster` configuration and injection.
+
 # Version 2.0.3 (2020-10-30)
 
 * [fix] Replace the `@NotBlank` by a `@NotNull` on the `uri` config option.
