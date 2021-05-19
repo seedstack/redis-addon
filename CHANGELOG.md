@@ -1,3 +1,7 @@
+# Version 2.1.1 (2021-05-19)
+
+* [fix] Initialization was completely skipped when only Jedis clusters were configured.
+
 # Version 2.1.0 (2021-05-06)
 
 * [new] Support cluster mode for Redis through `JedisCluster` configuration and injection.

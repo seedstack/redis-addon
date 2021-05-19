@@ -57,8 +57,8 @@ public class RedisPlugin extends AbstractSeedPlugin {
     public InitState initialize(InitContext initContext) {
         RedisConfig redisConfig = getConfiguration(RedisConfig.class);
 
-        if (redisConfig.getClients().isEmpty()) {
-            LOGGER.info("No Redis client configured, Redis support disabled");
+        if (redisConfig.getClients().isEmpty() && redisConfig.getClusters().isEmpty()) {
+            LOGGER.info("No Redis client or cluster configured, Redis support disabled");
             return InitState.INITIALIZED;
         }
 
