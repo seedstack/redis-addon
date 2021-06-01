@@ -1,3 +1,7 @@
+# Version 2.1.2 (2021-05-19)
+
+* [new] New `ssl` configuration option to enable or disable SSL/TLS for each client/cluster (enabled by default).
+
 # Version 2.1.1 (2021-05-19)
 
 * [fix] Initialization was completely skipped when only Jedis clusters were configured.

@@ -124,7 +124,7 @@ public class RedisPlugin extends AbstractSeedPlugin {
 
 
     private JedisPool createJedisPool(RedisConfig.ClientConfig clientConfig, SSLProvider sslProvider) {
-        if (sslProvider.sslContext().isPresent()) {
+        if (clientConfig.isSsl() && sslProvider.sslContext().isPresent()) {
             SSLContext sslContext = sslProvider.sslContext().get();
             return new JedisPool(
                     clientConfig.getPoolConfig(),
@@ -150,7 +150,7 @@ public class RedisPlugin extends AbstractSeedPlugin {
         SSLSocketFactory sslSocketFactory;
         SSLParameters sslParameters;
         boolean ssl;
-        if (sslProvider.sslContext().isPresent()) {
+        if (clusterConfig.isSsl() && sslProvider.sslContext().isPresent()) {
             SSLContext sslContext = sslProvider.sslContext().get();
             sslSocketFactory = sslContext.getSocketFactory();
             sslParameters = sslContext.getSupportedSSLParameters();

@@ -58,6 +58,7 @@ public class RedisConfig {
         private int socketTimeout = Protocol.DEFAULT_TIMEOUT;
         @Min(0)
         private int socketInfiniteTimeout = Protocol.DEFAULT_TIMEOUT;
+        private boolean ssl = true;
 
         public JedisPoolConfig getPoolConfig() {
             return poolConfig;
@@ -91,6 +92,15 @@ public class RedisConfig {
 
         public void setSocketInfiniteTimeout(int socketInfiniteTimeout) {
             this.socketInfiniteTimeout = socketInfiniteTimeout;
+        }
+
+        public boolean isSsl() {
+            return ssl;
+        }
+
+        public CommonConfig setSsl(boolean ssl) {
+            this.ssl = ssl;
+            return this;
         }
     }
 
